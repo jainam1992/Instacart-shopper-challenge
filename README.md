@@ -21,15 +21,15 @@ python -- 2.7.9     django -- 1.11       sqlite database
 
 ## APIs exposed by Application:
 
-+1. The web application exposes basic APIs for register, login, logout, editing an application. Following are those APIs --
-+* http://127.0.0.1:8000/shopper/register
-+* http://127.0.0.1:8000/shopper/login
-+* http://127.0.0.1:8000/shopper/logout
-+* http://127.0.0.1:8000/shopper/edit
+1. The web application exposes basic APIs for register, login, logout, editing an application. Following are those APIs
+  -> http://127.0.0.1:8000/shopper/register
+  -> http://127.0.0.1:8000/shopper/login
+  -> http://127.0.0.1:8000/shopper/logout
+  -> http://127.0.0.1:8000/shopper/edit
 
-+2. We also expose an analytics api to monitor the progress of shoppers. This API returns the status of weekly shopper application grouped by workflow state count. This can be accessed by --
-http://127.0.0.1:8000/shopper/funnel/?start_date=START_DATE&end_date=END_DATE The dates must follow the YYYY-MM-DD format. Eg -
-+* http://127.0.0.1:8000/shopper/funnel/?start_date=2014-01-01&end_date=2018-12-31
+2. We also expose an analytics api to monitor the progress of shoppers. This API returns the status of weekly shopper application grouped by workflow state count. This can be accessed by --
+http://127.0.0.1:8000/shopper/funnel/?start_date=START_DATE&end_date=END_DATE The dates must follow the YYYY-MM-DD format. 
+Eg - http://127.0.0.1:8000/shopper/funnel/?start_date=2014-01-01&end_date=2018-12-31
 
 ## Design Overview
 
