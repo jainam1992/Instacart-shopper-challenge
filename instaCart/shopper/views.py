@@ -1,0 +1,141 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.template import Context
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
+from django.contrib import messages
+from django.db import IntegrityError
+
+
+import datetime
+import time
+import json
+
+from shopper.models import Applicant
+
+# Util function to create and destroy functions
+
+
+def createSession(request, applicant):
+    request.session['first_name'] = applicant.first_name
+    request.session['last_name'] = applicant.last_name
+    request.session['email'] = applicant.email
+    request.session['region'] = applicant.region
+
+
+def destroySession(request, applicant):
+    request.session['first_name'] = None
+    request.session['last_name'] = None
+    request.session['email'] = None
+    request.session['region'] = applicant.region
+
+# Create your views here.
+
+
+def index(request):
+    # This is the landing page, it just redirects to the home page
+    return render(request, 'shopper/landing.html')
+
+
+def shopper_home(request):
+    # A shopper lands here either after logging in or after registration
+    print request.session.items(), 'session login'
+    if request.session['email'] is None:
+        return redirect('login')
+    email = request.session['email']
+    applicant = Applicant.objects.get(email=email)
+    print applicant
+    return render(request, 'shopper/applicant_home.html', applicant.__dict__)
+
+
+def login(request):
+    # Triggered by login request, if the email id doesn't exists, then return
+    # error, otherwise success
+    if request.POST:
+        email = request.POST['email']
+        try:
+            applicant = Applicant.objects.get(email=email)
+            createSession(request, applicant)
+            return redirect('shopper_home')
+        except ObjectDoesNotExist:
+            error_message = "User does not exist"
+            messages.add_message(request, messages.ERROR, error_message)
+            errorObj = {}
+            errorObj['invalidEmail'] = email
+            return render(request, 'shopper/landing.html', errorObj)
+
+    # For get requests just redirect to landing page
+    return render(request, 'shopper/landing.html')
+
+
+def logout(request):
+    # Destroy the session if already logged in
+    if request.session['email'] is None:
+        return redirect('login')
+    email = request.session['email']
+    applicant = Applicant.objects.get(email=email)
+    destroySession(request, applicant)
+    return render(request, 'shopper/landing.html')
+
+
+def register(request):
+    if request.POST:
+        email = request.POST['email']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        region = request.POST['region']
+        phone = request.POST['phone']
+        phone_type = request.POST['phone_type']
+        over_21 = True if request.POST['over_21'] else None
+        applicant = Applicant(
+            first_name=first_name, last_name=last_name, email=email, region=region, phone=phone, phone_type=phone_type, over_21=over_21)
+        print applicant
+        # If email is unique then register, otherwise error
+        try:
+            applicant.save()
+        except IntegrityError:
+            error_message = "Email already exists"
+            print error_message
+            messages.add_message(request, messages.ERROR, error_message)
+            return render(request, 'shopper/landing.html',  applicant.__dict__)
+        invalidate_cache(timezone.now())
+        createSession(request, applicant)
+        return redirect('shopper_home')
+
+    return render(request, 'shopper/landing.html')
+
+
+def edit(request):
+    # Check if logged in, if logged in then
+    if request.session['email'] is None:
+        return redirect('login')
+    if request.POST:
+        print request.session.items()
+        email = request.session['email']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        region = request.POST['region']
+        phone = request.POST['phone']
+        phone_type = request.POST['phone_type']
+
+        # create orm object for the req
+        applicant = Applicant.objects.get(email=email)
+        print applicant
+        applicant.first_name = first_name
+        applicant.last_name = last_name
+        applicant.region = region
+        applicant.phone = phone
+        applicant.phone_type = phone_type
+        applicant.save()
+        createSession(request, applicant)
+        return redirect('shopper_home')
+
+    # If a separate edit page was used, then the get request would have been
+    # used to render edit form. But now I am using modal, hence the code below
+    # is no-op.
+    email = request.session['email']
+    applicant = Applicant.objects.get(email=email)
+    return render(request, 'shopper/applicant_home.html', applicant.__dict__)
