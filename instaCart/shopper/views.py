@@ -15,6 +15,7 @@ import time
 import json
 
 from shopper.models import Applicant
+from shopper.funnel import *
 
 # Util function to create and destroy functions
 
@@ -139,3 +140,21 @@ def edit(request):
     email = request.session['email']
     applicant = Applicant.objects.get(email=email)
     return render(request, 'shopper/applicant_home.html', applicant.__dict__)
+
+
+def funnel(request):
+    # Funnel API to get the metrics. It will try to first convert the dates
+    # If successful, it asks Funnel module for the analytics else errors
+    try:
+        request_params = request.GET
+        start_date_str = request_params['start_date']
+        end_date_str = request_params['end_date']
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+    except Exception as e:
+        return HttpResponseBadRequest(e.message)
+
+    start_time = time.time()
+    analytic_metrics = get_analytics(start_date, end_date)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    return HttpResponse(json.dumps(analytic_metrics), content_type="application/json")
