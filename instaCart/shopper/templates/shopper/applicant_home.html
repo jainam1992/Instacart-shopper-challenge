@@ -1,0 +1,172 @@
+{% extends "shopper/base.html" %}
+{% block header %}
+{% endblock %}
+{% block content %}
+<div class="applicant-background">
+	<div class="row headerBg">
+		<div class="col-lg-8  " >
+			<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="row">
+					<div class="col-md-10"><a class="navbar-brand " href="#"><img class="title-logo" src="/static/images/instacart-logo.png"></a></div>
+					<div class="collapse navbar-collapse col-md-2" id="navbarNav" >
+						<ul class="navbar-nav">
+							<li class="nav-item active">
+								<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+							</li>
+							<li class="nav-item font-dark">
+								<a class="nav-link"  href="/shopper">Logout</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
+	<div class="transbox">
+		<h1 class=" text">WELCOME</h1>
+		<form class="form-horizontal ">
+			<div class="row">
+				<div class="col-lg-6 padding-left">
+					<div class=" row form-group padding-left ">
+						<label class="control-label col-sm-4 padding-left bold-text" for="firstName">First Name:</label>
+						<div class="col-sm-7">
+							<p id="firstName" class="form-control-static bold-text padding-top">{{ first_name}}</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 padding-left">
+					<div class=" row form-group padding-left">
+						<label class="control-label col-sm-4 padding-left bold-text" for="firstName">Last Name:</label>
+						<div class="col-sm-7">
+							<p id="lastName" class="form-control-static bold-text padding-top">{{ last_name}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 padding-left">
+					<div class=" row form-group padding-left">
+						<label class="control-label col-sm-4 padding-left bold-text">Phone:</label>
+						<div class="col-sm-7">
+							<p id="city1" class="form-control-static bold-text padding-top">{{phone}}</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 padding-left">
+					<div class=" row form-group padding-left">
+						<label class="control-label col-sm-4 padding-left bold-text">Phone Type:</label>
+						<div class="col-sm-7">
+							<p id="city1" class="form-control-static bold-text padding-top">{{phone_type}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 padding-left">
+					<div class=" row form-group padding-left">
+						<label class="control-label col-sm-4 padding-left bold-text">Region:</label>
+						<div class="col-sm-7">
+							<p id="city1" class="form-control-static bold-text padding-top">{{region}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 padding-left">
+					<div class=" row form-group padding-left">
+						<label class="control-label col-sm-4 padding-left bold-text">Email:</label>
+						<div class="col-sm-7">
+							<p id="email" class="form-control-static bold-text padding-top">{{ email}}</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 padding-left">
+					<div class=" row form-group padding-left ">
+						<label class="control-label col-sm-4 padding-left bold-text">Application status</label>
+						<div class="col-sm-7">
+							<p id="workflow_state" class="form-control-static bold-text padding-top">{{ workflow_state}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10 text ">
+					<button type="button" class="btn btn-success" data-toggle="modal" data-target="#updateModal">Update Details</button>
+					<a class="btn btn-success"  href="/shopper">Logout</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!--modal content-->
+<div class="modal fade modal-background" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Update Details</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form role="form"  method="post" action="/shopper/edit/">
+				<div class="modal-body">
+					<div class="">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								{% csrf_token %}
+								<div class="row">
+									<div class="padding-left">
+										<div class="form-group row">
+											<label class="control-label col-xs-6 col-sm-6 col-md-6 " for="firstName">First Name</label>
+											<input type="text" name="first_name" id="first_name" class="form-control input-sm col-xs-6 col-sm-6 col-md-6" value="{{ first_name}}">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group row padding-left">
+										<label class="control-label col-xs-6 col-sm-6 col-md-6 " for="firstName">Last Name</label>
+										<input type="text" name="last_name" id="last_name" class="form-control input-sm col-xs-6 col-sm-6 col-md-6" value="{{ last_name}}">
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group row padding-left">
+										<label class="control-label col-xs-6 col-sm-6 col-md-7 " for="firstName">Region</label>
+										<input type="text" name="region" id="region" class="form-control input-sm col-xs-6 col-sm-6 col-md-5" value="{{region}}">
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group row padding-left">
+										<label class="control-label col-xs-6 col-sm-6 col-md-7">Phone</label>
+										<input type="text" name="phone" class="form-control input-sm col-xs-6 col-sm-6 col-md-5" value="{{phone}}">
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group row padding-left">
+										<label class="control-label col-xs-6 col-sm-6 col-md-6">Phone Type</label>
+										<input type="text" name="phone_type" class="form-control input-sm col-xs-6 col-sm-6 col-md-5" value="{{phone_type}}">
+									</div>
+								</div>
+								<div class="row">
+									<div class="padding-left">
+										<div class=" form-group row">
+											<label class="control-label col-xs-6 col-sm-6 col-md-6 " for="emailAddress">Email:</label>
+											<input id="emailAddress" class="form-control input-sm col-xs-6 col-sm-6 col-md-5" style="margin-left: 5%" value="{{ email}}"  disabled>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" id="continue" class="btn btn-success">Update</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
